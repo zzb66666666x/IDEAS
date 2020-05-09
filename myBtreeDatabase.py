@@ -131,8 +131,8 @@ class Btree:
                     # merge_direction = -1 # left
                     left_sibling = left_sibling_tuple[0]
                     separator = left_sibling_tuple[1]
-                    print("the sep has key:", separator.key)
-                    print("the left sibling has the first: ", left_sibling.first.key)
+                    # print("the sep has key:", separator.key)
+                    # print("the left sibling has the first: ", left_sibling.first.key)
                     self.__insert_to_root(left_sibling, separator.key, separator.data, root.child)
                     left_sibling.extend(root.first)
                     self.__delete_in_root(root.parent, separator.key)
@@ -393,4 +393,8 @@ if __name__ == "__main__":
     print("------------")
     print("the minimal number of elements in one list: ", tree.min)
     tree.delete(19)
+    tree.delete(13)
+    tree.delete(18)
+    tree.delete(1)
+    print(tree.find(0))
     tree.show()
