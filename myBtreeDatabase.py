@@ -120,7 +120,7 @@ class Btree:
                 temp_child = left_sibling.last.child
                 separator.key = left_sibling.last.key
                 separator.data = left_sibling.last.data
-                self.__delete(left_sibling, left_sibling.last.key)  # left_sibling might not be leaf
+                left_sibling.delete(left_sibling.last.key)
                 self.__insert_to_root(root, temp_key, temp_data, temp_child)
             elif right_sibling_tuple is not None and right_sibling_tuple[0].numberKeys > self.min:
                 # choose right
@@ -132,7 +132,8 @@ class Btree:
                 temp_child = right_sibling.child
                 separator.key = right_sibling.first.key
                 separator.data = right_sibling.first.data
-                self.__delete(right_sibling, right_sibling.first.key)   # right_sibling might not be leaf
+                right_sibling.child = right_sibling.first.child
+                right_sibling.delete(right_sibling.first.key)
                 self.__insert_to_root(root, temp_key, temp_data, temp_child)
             else:
                 # merge things here
@@ -402,12 +403,12 @@ if __name__ == "__main__":
     # testing delete
     print("------------")
     tree.delete(0)
-    #tree.delete(1)
-    #tree.delete(2)
-    #tree.delete(3)
-    #tree.delete(4)
-    #tree.delete(5)
-    #tree.delete(6)
+    tree.delete(1)
+    tree.delete(2)
+    tree.delete(3)
+    tree.delete(4)
+    tree.delete(5)
+    tree.delete(6)
     tree.show()
     # print(tree.root.numberKeys)
     # print()
