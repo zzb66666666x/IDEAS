@@ -51,6 +51,7 @@ class Btree:
             single_node = split_res[1]
             second_list = split_res[2]
             self.__adjust(root, single_node, second_list)
+            return second_list
 
     def __adjust(self, root, single_node, second_list):
         # print("Begin to adjust things... ")
@@ -64,7 +65,11 @@ class Btree:
             self.root = new_parent
         else:
             parent = root.parent
-            self.__insert_to_root(parent, single_node.key, single_node.data, second_list)
+            splitted_list = self.__insert_to_root(parent, single_node.key, single_node.data, second_list)
+            if splitted_list is not None:
+                splitted_list.child.parent = splitted_list
+                for i in splitted_list:
+                    i.child.parent = splitted_list
 
     def delete(self, key):
         self.__delete(self.root, key)
@@ -218,6 +223,7 @@ class LinkedList:
     def left_sibling(self, llist):
         # the self here is a parent of llist
         cursor = self.first
+        print(self.first.key)
         if self.child == llist:
             return None
         prev = self
@@ -391,10 +397,5 @@ if __name__ == "__main__":
     print(tree.find(15))
     # testing delete
     print("------------")
-    print("the minimal number of elements in one list: ", tree.min)
-    tree.delete(19)
-    tree.delete(13)
-    tree.delete(18)
-    tree.delete(1)
-    print(tree.find(0))
+    tree.delete(9)
     tree.show()
