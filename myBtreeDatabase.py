@@ -117,10 +117,11 @@ class Btree:
                 separator = left_sibling_tuple[1]
                 temp_data = separator.data
                 temp_key = separator.key
+                temp_child = left_sibling.last.child
                 separator.key = left_sibling.last.key
                 separator.data = left_sibling.last.data
                 self.__delete(left_sibling, left_sibling.last.key)  # left_sibling might not be leaf
-                self.__insert_to_root(root, temp_key, temp_data)
+                self.__insert_to_root(root, temp_key, temp_data, temp_child)
             elif right_sibling_tuple is not None and right_sibling_tuple[0].numberKeys > self.min:
                 # choose right
                 right_sibling = right_sibling_tuple[0]
@@ -128,10 +129,11 @@ class Btree:
                 separator = right_sibling_tuple[1]
                 temp_data = separator.data
                 temp_key = separator.key
+                temp_child = right_sibling.child
                 separator.key = right_sibling.first.key
                 separator.data = right_sibling.first.data
                 self.__delete(right_sibling, right_sibling.first.key)   # right_sibling might not be leaf
-                self.__insert_to_root(root, temp_key, temp_data)
+                self.__insert_to_root(root, temp_key, temp_data, temp_child)
             else:
                 # merge things here
                 if left_sibling_tuple is not None:
@@ -400,4 +402,17 @@ if __name__ == "__main__":
     # testing delete
     print("------------")
     tree.delete(0)
+    #tree.delete(1)
+    #tree.delete(2)
+    #tree.delete(3)
+    #tree.delete(4)
+    #tree.delete(5)
+    #tree.delete(6)
     tree.show()
+    # print(tree.root.numberKeys)
+    # print()
+    # for i in tree.root.child:
+    #     print(i.key)
+    # print(tree.root.first.child)
+    # for i in tree.root.first.next.child:
+    #     print(i.key)
