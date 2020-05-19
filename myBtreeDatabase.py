@@ -96,6 +96,7 @@ class Btree:
             self.__delete(node.child, key)
 
     def __delete_in_root(self, root, key):
+        # print(key)
         if root is None:
             return
         if root.numberKeys > self.min:
@@ -123,7 +124,8 @@ class Btree:
             elif right_sibling_tuple is not None and right_sibling_tuple[0].numberKeys > self.min:
                 # choose right
                 right_sibling = right_sibling_tuple[0]
-                separator = left_sibling_tuple[1]
+                # print("checking right_sibling.first.key", right_sibling.first.key)
+                separator = right_sibling_tuple[1]
                 temp_data = separator.data
                 temp_key = separator.key
                 separator.key = right_sibling.first.key
@@ -223,7 +225,7 @@ class LinkedList:
     def left_sibling(self, llist):
         # the self here is a parent of llist
         cursor = self.first
-        print(self.first.key)
+        # print(self.first.key)
         if self.child == llist:
             return None
         prev = self
@@ -397,5 +399,5 @@ if __name__ == "__main__":
     print(tree.find(15))
     # testing delete
     print("------------")
-    tree.delete(9)
+    tree.delete(0)
     tree.show()
