@@ -105,6 +105,8 @@ class Btree:
             root.delete(key)
             if root.parent is None:
                 if root.numberKeys == 0:
+                    if root.child is None:
+                        return
                     self.root = root.child
                     root.child.parent = None
                 return
@@ -419,4 +421,8 @@ if __name__ == "__main__":
     tree.delete(13)
     tree.delete(14)
     tree.delete(15)
+    tree.delete(16)
+    tree.delete(17)
+    tree.delete(18)
+    tree.delete(19)
     tree.show()
