@@ -102,11 +102,11 @@ class Btree:
         if root.numberKeys > self.min:
             root.delete(key)
         else:
-            # find brothers
             root.delete(key)
             if root.parent is None:
                 if root.numberKeys == 0:
                     self.root = root.child
+                    root.child.parent = None
                 return
             left_sibling_tuple = root.parent.left_sibling(root)
             right_sibling_tuple = root.parent.right_sibling(root)
@@ -152,6 +152,8 @@ class Btree:
                     separator = right_sibling_tuple[1]
                     self.__insert_to_root(root, separator.key, separator.data, right_sibling.child)
                     root.extend(right_sibling.first)
+                    # print("checking what to delete",separator.key)
+                    # print("what's left in the parent???", root.parent.first.key)
                     self.__delete_in_root(root.parent, separator.key)
 
     def show(self):
@@ -401,7 +403,6 @@ if __name__ == "__main__":
     print(tree.find(5))
     print(tree.find(15))
     # testing delete
-    print("------------")
     tree.delete(0)
     tree.delete(1)
     tree.delete(2)
@@ -409,11 +410,13 @@ if __name__ == "__main__":
     tree.delete(4)
     tree.delete(5)
     tree.delete(6)
+    tree.delete(7)
+    tree.delete(8)
+    tree.delete(9)
+    tree.delete(10)
+    tree.delete(11)
+    tree.delete(12)
+    tree.delete(13)
+    tree.delete(14)
+    tree.delete(15)
     tree.show()
-    # print(tree.root.numberKeys)
-    # print()
-    # for i in tree.root.child:
-    #     print(i.key)
-    # print(tree.root.first.child)
-    # for i in tree.root.first.next.child:
-    #     print(i.key)
