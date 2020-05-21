@@ -42,7 +42,7 @@ class Btree:
         # the name here: insert to root
         # the root is not the absolute root of the tree, but the relative root whose type is a linked list
         if root.numberKeys < self.max:
-            print("I am in root.numberKeys < self.max")
+            # print("I am in root.numberKeys < self.max")
             root.insert(key, value, child)
         else:
             # print("seems that too many elements in one list")
@@ -89,22 +89,28 @@ class Btree:
                 self.__delete_in_root(root, key)
             else:
                 # transfer the condition to delete a leaf
+                #########################################
                 temp_key = node.child.first.key
                 temp_data = node.child.first.data
                 node.key = temp_key
                 node.data = temp_data
+                #########################################
                 self.__delete(node.child, temp_key)
         else:
+            print("self.__delete(node.child, key)",key)
+            print("\nchecking the node")
+            print(node.key)
+            print("end of checking\n")
             self.__delete(node.child, key)
 
     def __delete_in_root(self, root, key):
-        print("now we should delete in root: ", key)
+        #print("now we should delete in root: ", key)
         if root is None:
             return
         if root.numberKeys > self.min:
             root.delete(key)
         else:
-            print("directly remove the key: ", key)
+            #print("directly remove the key: ", key)
             root.delete(key)
             if root.parent is None:
                 if root.numberKeys == 0:
@@ -113,11 +119,11 @@ class Btree:
                     self.root = root.child
                     root.child.parent = None
                 return
-            print("find the left or right siblings of: ", key)
-            print("checking the parent of key ", key)
-            for i in root.parent:
-                print(i.key)
-            print("end of checking the parent")
+            # print("find the left or right siblings of: ", key)
+            # print("checking the parent of key ", key)
+            # for i in root.parent:
+            #     print(i.key)
+            # print("end of checking the parent")
             assert(root.parent)
             left_sibling_tuple = root.parent.left_sibling(root)
             right_sibling_tuple = root.parent.right_sibling(root)
@@ -126,7 +132,6 @@ class Btree:
                 # choose left
                 left_sibling = left_sibling_tuple[0]
                 separator = left_sibling_tuple[1]
-                print("checking the separator: ", separator.key)
                 temp_data = separator.data
                 temp_key = separator.key
                 temp_child = left_sibling.last.child
@@ -136,11 +141,10 @@ class Btree:
                 # change the left child of this root
                 # this insert changes the left child of root
                 # so don't use the IO of linked list to insert
-                print("checking the temp key: ",temp_key)
                 newnode = LinkedList.Node(temp_key, temp_data, root.first, root.child)
                 root.child = temp_child
                 root.first = newnode
-                root.numberKeys +=1
+                root.numberKeys += 1
             elif right_sibling_tuple is not None and right_sibling_tuple[0].numberKeys > self.min:
                 # choose right
                 right_sibling = right_sibling_tuple[0]
@@ -278,10 +282,9 @@ class LinkedList:
         raise Exception("No such list exists")
 
     def insert(self, key, value, child=None):
-        print("begin to insert thing with key: ", key)
+        # print("begin to insert thing with key: ", key)
         node = self.find_loc_for_key(key)
         if node is None:
-            print("I am in node is none")
             # insert to the first position or insert to an empty list
             next = self.first
             new_node = self.Node(key, value, next, child)
@@ -433,38 +436,20 @@ if __name__ == "__main__":
     # temp = list(range(40))
     # random.shuffle(temp)
     # print(temp)
-    # for i in temp:
-    #     try:
-    #         print("the deleted value is: ",i)
-    #         tree.delete(i)
-    #     except:
-    #         print("the failure is: ", i)
-    tree.delete(9)
-    tree.delete(0)
+    # temp = [2, 30, 35, 7, 13, 26, 21, 24, 28, 1, 16, 20, 25, 4, 19, 22, 11, 18, 32, 38, 10, 17, 9, 0, 15, 37, 8, 34, 31, 6, 12, 14, 5, 33, 36, 3, 27, 23, 39, 29]
+    temp = [2, 30, 35, 7, 13, 26, 21, 24, 28]
+    for i in temp:
+        # try:
+        #     print("the deleted value is: ",i)
+        #     tree.delete(i)
+        # except:
+        #     print("the failure is: ", i)
+        #     raise Exception("Something wrong...")
+        print("try to delete: ", i)
+        tree.delete(i)
+        tree.show()
+    tree.show()
+
     # print("\n**************************")
     # tree.show()
     # print("**************************\n")
-    tree.delete(31)
-    tree.delete(4)
-    # print("\n**************************")
-    # tree.show()
-    # print("**************************\n")
-    tree.delete(39)
-    print("\n************39**************")
-    tree.show()
-    print("************39**************\n")
-    tree.delete(8)
-    print("\n*************8*************")
-    tree.show()
-    print("*************8*************\n")
-    tree.delete(32)
-    print("\n*************32*************")
-    tree.show()
-    print("*************32*************\n")
-    tree.delete(21)
-    print("\n************21**************")
-    tree.show()
-    print("**************21************\n")
-    #print("###########################################")
-    tree.delete(14)
-    tree.show()
