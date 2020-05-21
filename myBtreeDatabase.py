@@ -42,6 +42,7 @@ class Btree:
         # the name here: insert to root
         # the root is not the absolute root of the tree, but the relative root whose type is a linked list
         if root.numberKeys < self.max:
+            print("I am in root.numberKeys < self.max")
             root.insert(key, value, child)
         else:
             # print("seems that too many elements in one list")
@@ -75,6 +76,7 @@ class Btree:
         self.__delete(self.root, key)
 
     def __delete(self, root, key):
+        print("the deleted key is:", key)
         if root is None:
             raise Exception("No such key should be deleted")
         node = root.find_loc_for_key(key)
@@ -96,12 +98,13 @@ class Btree:
             self.__delete(node.child, key)
 
     def __delete_in_root(self, root, key):
-        # print(key)
+        print("now we should delete in root: ", key)
         if root is None:
             return
         if root.numberKeys > self.min:
             root.delete(key)
         else:
+            print("directly remove the key: ", key)
             root.delete(key)
             if root.parent is None:
                 if root.numberKeys == 0:
@@ -110,6 +113,12 @@ class Btree:
                     self.root = root.child
                     root.child.parent = None
                 return
+            print("find the left or right siblings of: ", key)
+            print("checking the parent of key ", key)
+            for i in root.parent:
+                print(i.key)
+            print("end of checking the parent")
+            assert(root.parent)
             left_sibling_tuple = root.parent.left_sibling(root)
             right_sibling_tuple = root.parent.right_sibling(root)
             # choose one to use
@@ -117,13 +126,21 @@ class Btree:
                 # choose left
                 left_sibling = left_sibling_tuple[0]
                 separator = left_sibling_tuple[1]
+                print("checking the separator: ", separator.key)
                 temp_data = separator.data
                 temp_key = separator.key
                 temp_child = left_sibling.last.child
                 separator.key = left_sibling.last.key
                 separator.data = left_sibling.last.data
                 left_sibling.delete(left_sibling.last.key)
-                self.__insert_to_root(root, temp_key, temp_data, temp_child)
+                # change the left child of this root
+                # this insert changes the left child of root
+                # so don't use the IO of linked list to insert
+                print("checking the temp key: ",temp_key)
+                newnode = LinkedList.Node(temp_key, temp_data, root.first, root.child)
+                root.child = temp_child
+                root.first = newnode
+                root.numberKeys +=1
             elif right_sibling_tuple is not None and right_sibling_tuple[0].numberKeys > self.min:
                 # choose right
                 right_sibling = right_sibling_tuple[0]
@@ -135,7 +152,12 @@ class Btree:
                 separator.key = right_sibling.first.key
                 separator.data = right_sibling.first.data
                 right_sibling.child = right_sibling.first.child
-                right_sibling.delete(right_sibling.first.key)
+                # delete the left child of the right sibling
+                # the delete is about the left child of right sibling
+                # so don't use the IO of linked list
+                right_sibling.child = right_sibling.first.child
+                right_sibling.first = right_sibling.first.next
+                right_sibling.numberKeys -= 1
                 self.__insert_to_root(root, temp_key, temp_data, temp_child)
             else:
                 # merge things here
@@ -256,8 +278,10 @@ class LinkedList:
         raise Exception("No such list exists")
 
     def insert(self, key, value, child=None):
+        print("begin to insert thing with key: ", key)
         node = self.find_loc_for_key(key)
         if node is None:
+            print("I am in node is none")
             # insert to the first position or insert to an empty list
             next = self.first
             new_node = self.Node(key, value, next, child)
@@ -393,9 +417,10 @@ class Queue:
 
 
 if __name__ == "__main__":
+    import random
     # generating data
     tree = Btree()
-    keys = list(range(20))
+    keys = list(range(40))
     # np.random.shuffle(keys)
     data = list(range(10))
     for i in keys:
@@ -405,24 +430,41 @@ if __name__ == "__main__":
     print(tree.find(5))
     print(tree.find(15))
     # testing delete
-    tree.delete(0)
-    tree.delete(1)
-    tree.delete(2)
-    tree.delete(3)
-    tree.delete(4)
-    tree.delete(5)
-    tree.delete(6)
-    tree.delete(7)
-    tree.delete(8)
+    # temp = list(range(40))
+    # random.shuffle(temp)
+    # print(temp)
+    # for i in temp:
+    #     try:
+    #         print("the deleted value is: ",i)
+    #         tree.delete(i)
+    #     except:
+    #         print("the failure is: ", i)
     tree.delete(9)
-    tree.delete(10)
-    tree.delete(11)
-    tree.delete(12)
-    tree.delete(13)
+    tree.delete(0)
+    # print("\n**************************")
+    # tree.show()
+    # print("**************************\n")
+    tree.delete(31)
+    tree.delete(4)
+    # print("\n**************************")
+    # tree.show()
+    # print("**************************\n")
+    tree.delete(39)
+    print("\n************39**************")
+    tree.show()
+    print("************39**************\n")
+    tree.delete(8)
+    print("\n*************8*************")
+    tree.show()
+    print("*************8*************\n")
+    tree.delete(32)
+    print("\n*************32*************")
+    tree.show()
+    print("*************32*************\n")
+    tree.delete(21)
+    print("\n************21**************")
+    tree.show()
+    print("**************21************\n")
+    #print("###########################################")
     tree.delete(14)
-    tree.delete(15)
-    tree.delete(16)
-    tree.delete(17)
-    tree.delete(18)
-    tree.delete(19)
     tree.show()
