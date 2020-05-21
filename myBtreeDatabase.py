@@ -1,7 +1,6 @@
 # this is the code for B-tree
 from math import ceil
 
-
 class Btree:
     def __init__(self, order=5):
         self.order = order
@@ -76,41 +75,40 @@ class Btree:
         self.__delete(self.root, key)
 
     def __delete(self, root, key):
-        print("the deleted key is:", key)
         if root is None:
             raise Exception("No such key should be deleted")
+        # print(root.first.key)
         node = root.find_loc_for_key(key)
         if node is None:
             self.__delete(root.child, key)
         elif node.key == key:
+            # print("checking the node found: ", node.key)
+            # print(node.child)
             # find the one to be deleted
             if node.child is None:
                 # delete the leaf node in the leaf list
                 self.__delete_in_root(root, key)
             else:
                 # transfer the condition to delete a leaf
-                #########################################
-                temp_key = node.child.first.key
-                temp_data = node.child.first.data
+                temp_list = node.child
+                while temp_list.child != None:
+                    temp_list = temp_list.child
+                temp_key = temp_list.first.key
+                temp_data = temp_list.first.data
                 node.key = temp_key
                 node.data = temp_data
-                #########################################
                 self.__delete(node.child, temp_key)
         else:
-            print("self.__delete(node.child, key)",key)
-            print("\nchecking the node")
-            print(node.key)
-            print("end of checking\n")
             self.__delete(node.child, key)
 
     def __delete_in_root(self, root, key):
-        #print("now we should delete in root: ", key)
+        # print("now we should delete in root: ", key)
         if root is None:
             return
         if root.numberKeys > self.min:
             root.delete(key)
         else:
-            #print("directly remove the key: ", key)
+            # print("directly remove the key: ", key)
             root.delete(key)
             if root.parent is None:
                 if root.numberKeys == 0:
@@ -119,12 +117,6 @@ class Btree:
                     self.root = root.child
                     root.child.parent = None
                 return
-            # print("find the left or right siblings of: ", key)
-            # print("checking the parent of key ", key)
-            # for i in root.parent:
-            #     print(i.key)
-            # print("end of checking the parent")
-            assert(root.parent)
             left_sibling_tuple = root.parent.left_sibling(root)
             right_sibling_tuple = root.parent.right_sibling(root)
             # choose one to use
@@ -143,6 +135,8 @@ class Btree:
                 # so don't use the IO of linked list to insert
                 newnode = LinkedList.Node(temp_key, temp_data, root.first, root.child)
                 root.child = temp_child
+                if temp_child is not None:
+                    temp_child.parent = root
                 root.first = newnode
                 root.numberKeys += 1
             elif right_sibling_tuple is not None and right_sibling_tuple[0].numberKeys > self.min:
@@ -433,18 +427,10 @@ if __name__ == "__main__":
     print(tree.find(5))
     print(tree.find(15))
     # testing delete
-    # temp = list(range(40))
-    # random.shuffle(temp)
-    # print(temp)
-    # temp = [2, 30, 35, 7, 13, 26, 21, 24, 28, 1, 16, 20, 25, 4, 19, 22, 11, 18, 32, 38, 10, 17, 9, 0, 15, 37, 8, 34, 31, 6, 12, 14, 5, 33, 36, 3, 27, 23, 39, 29]
-    temp = [2, 30, 35, 7, 13, 26, 21, 24, 28]
+    temp = list(range(40))
+    random.shuffle(temp)
+    print(temp)
     for i in temp:
-        # try:
-        #     print("the deleted value is: ",i)
-        #     tree.delete(i)
-        # except:
-        #     print("the failure is: ", i)
-        #     raise Exception("Something wrong...")
         print("try to delete: ", i)
         tree.delete(i)
         tree.show()
